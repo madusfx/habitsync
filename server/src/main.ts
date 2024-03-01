@@ -15,9 +15,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('server-nestjs')
-    .setDescription(
-      'Server API do aplicativo HabitSync',
-    )
+    .setDescription('Server API do aplicativo HabitSync')
     .setVersion('1.0.0')
     .addBearerAuth({
       description: 'Infomar o JWT para autorizar o acesso',

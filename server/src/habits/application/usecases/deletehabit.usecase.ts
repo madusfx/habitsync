@@ -1,7 +1,7 @@
-import { UserRepository } from '@/users/domain/repositories/user.repository';
+import { HabitRepository } from '@/habits/domain/repositories/habit.repository';
 import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-case';
 
-export namespace DeleteUserUseCase {
+export namespace DeleteHabitUseCase {
   export type Input = {
     id: string;
   };
@@ -9,10 +9,10 @@ export namespace DeleteUserUseCase {
   export type Output = void;
 
   export class UseCase implements DefaultUseCase<Input, Output> {
-    constructor(private userRepository: UserRepository.Repository) {}
+    constructor(private habitRepository: HabitRepository.Repository) {}
 
     async execute(input: Input): Promise<Output> {
-      await this.userRepository.delete(input.id);
+      await this.habitRepository.delete(input.id);
     }
   }
 }

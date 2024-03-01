@@ -14,5 +14,33 @@ model User {
   password  String   @db.VarChar(100)
   createdAt DateTime @default(now())
 
+  habits         Habit[]
+  CompletedHabit CompletedHabit[]
+
   @@map("users")
+}
+
+model Habit {
+  id        String   @id @db.Uuid
+  userId    String   @db.Uuid
+  name      String   @db.VarChar(255)
+  weekDays  Int[]
+  createdAt DateTime @default(now())
+
+  user        User             @relation(fields: [userId], references: [id])
+  completedBy CompletedHabit[]
+
+  @@map("habits")
+}
+
+model CompletedHabit {
+  id             String   @id @db.Uuid
+  idHabit        String   @db.Uuid
+  idUser         String   @db.Uuid
+  completedHabit DateTime @default(now())
+
+  user  User  @relation(fields: [idUser], references: [id])
+  habit Habit @relation(fields: [idHabit], references: [id])
+
+  @@map("completed_habits")
 }

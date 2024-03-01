@@ -7,7 +7,7 @@ import { ConflictError } from '@/shared/domain/errors/conflict-error';
 
 export class UserPrismaRepository implements UserRepository.Repository {
   sortableFields: string[] = ['name', 'createdAt'];
-  constructor(private prismaService: PrismaService) { }
+  constructor(private prismaService: PrismaService) {}
 
   async findByEmail(email: string): Promise<UserEntity> {
     try {

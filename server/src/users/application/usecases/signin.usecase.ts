@@ -17,7 +17,7 @@ export namespace SigninUseCase {
     constructor(
       private userRepository: UserRepository.Repository,
       private hashProvider: HashProvider,
-    ) { }
+    ) {}
 
     async execute(input: Input): Promise<Output> {
       const { email, password } = input;

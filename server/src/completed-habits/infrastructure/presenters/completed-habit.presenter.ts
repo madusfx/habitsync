@@ -2,6 +2,9 @@ import { CompletedHabitOutput } from '@/completed-habits/application/dtos/comple
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CompletedHabitPresenter {
+  @ApiProperty({ description: 'Identificação do hábito completado' })
+  id: string;
+
   @ApiProperty({ description: 'Identificação do hábito' })
   idHabit: string;
 
@@ -12,6 +15,7 @@ export class CompletedHabitPresenter {
   completedHabit: Date;
 
   constructor(output: CompletedHabitOutput) {
+    this.id = output.id;
     this.idHabit = output.idHabit;
     this.idUser = output.idUser;
     this.completedHabit = output.completedHabit;

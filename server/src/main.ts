@@ -7,11 +7,16 @@ import { AppModule } from './app.module';
 import { applyGlobalConfig } from './global-config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cors = require('cors');
+
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+
+  app.use(cors());
 
   const config = new DocumentBuilder()
     .setTitle('server-nestjs')

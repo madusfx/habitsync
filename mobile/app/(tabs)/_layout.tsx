@@ -1,59 +1,40 @@
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faClockRotateLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Pressable } from 'react-native';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+const Tab = createBottomTabNavigator();
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import HabitsScreen from './one';
+import HabitsHistoryScreen from './two';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const renderOneScreen = () => <HabitsScreen />;
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    <NavigationContainer independent={true}>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let icon;
+
+            if (route.name === 'Hábitos') {
+              icon = <FontAwesomeIcon icon={faCheck} size={size} color={color} />;
+            } else if (route.name === 'Histórico') {
+              icon = <FontAwesomeIcon icon={faClockRotateLeft} size={size} color={color} />;
+            }
+
+            return icon;
+          },
+          headerShown: false
+        })}>
+        <Tab.Screen name="Hábitos" component={HabitsScreen} />
+        <Tab.Screen name="Histórico" component={HabitsHistoryScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }

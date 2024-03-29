@@ -104,7 +104,7 @@ export class HabitsController {
   })
   @UseGuards(AuthGuard)
   @Get('/user/:userId')
-  async findAllByUserId(@Param('id') userId: string) {
+  async findAllByUserId(@Param('userId') userId: string) {
     const output = await this.listHabitsUseCase.execute({ userId: userId });
     return HabitsController.listHabitsToResponse(output);
   }

@@ -7,8 +7,9 @@ import { UserPrismaRepository } from '@/users/infrastructure/database/prisma/rep
 import { GetUserUseCase } from '@/users/application/usecases/getuser.usecase';
 import { UserRepository } from '@/users/domain/repositories/user.repository';
 import { CompleteHabitUseCase } from '../application/usecases/completehabit.usecase';
-import { GetCompletedHabitUseCase } from '../application/usecases/getcompletedhabit.usecase';
 import { CompletedHabitRepository } from '../domain/repositories/completed-habit.repository';
+import { DeleteCompletedHabitUseCase } from '../application/usecases/deletecompletedhabit.usecase';
+import { FindCompletedHabitUseCase } from '../application/usecases/findcompletedhabit.usecase';
 
 @Module({
   imports: [AuthModule],
@@ -49,11 +50,22 @@ import { CompletedHabitRepository } from '../domain/repositories/completed-habit
       inject: ['CompletedHabitRepository'],
     },
     {
-      provide: GetCompletedHabitUseCase.UseCase,
+      provide: DeleteCompletedHabitUseCase.UseCase,
       useFactory: (
-        getCompletedHabitUseCase: CompletedHabitRepository.Repository,
+        deleteCompletedHabitUseCase: CompletedHabitRepository.Repository,
       ) => {
-        return new GetCompletedHabitUseCase.UseCase(getCompletedHabitUseCase);
+        return new DeleteCompletedHabitUseCase.UseCase(
+          deleteCompletedHabitUseCase,
+        );
+      },
+      inject: ['CompletedHabitRepository'],
+    },
+    {
+      provide: FindCompletedHabitUseCase.UseCase,
+      useFactory: (
+        findCompletedHabitUseCase: CompletedHabitRepository.Repository,
+      ) => {
+        return new FindCompletedHabitUseCase.UseCase(findCompletedHabitUseCase);
       },
       inject: ['CompletedHabitRepository'],
     },

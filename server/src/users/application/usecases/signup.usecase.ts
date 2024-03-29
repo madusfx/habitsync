@@ -18,7 +18,7 @@ export namespace SignupUseCase {
     constructor(
       private userRepository: UserRepository.Repository,
       private hashProvider: HashProvider,
-    ) { }
+    ) {}
 
     async execute(input: Input): Promise<Output> {
       const { name, email, password } = input;

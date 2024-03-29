@@ -1,16 +1,12 @@
 import { CompletedHabitRepository } from '@/completed-habits/domain/repositories/completed-habit.repository';
-import {
-  CompletedHabitOutput,
-  CompletedHabitOutputMapper,
-} from '../dtos/completed-habit-output';
 import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-case';
 
-export namespace GetCompletedsHabitUseCase {
+export namespace DeleteCompletedHabitUseCase {
   export type Input = {
-    userId: string;
+    idCompletedHabit: string;
   };
 
-  export type Output = CompletedHabitOutput;
+  export type Output = void;
 
   export class UseCase implements DefaultUseCase<Input, Output> {
     constructor(
@@ -18,8 +14,7 @@ export namespace GetCompletedsHabitUseCase {
     ) {}
 
     async execute(input: Input): Promise<Output> {
-      const entity = await this.completedHabitRepository.findById(input.userId);
-      return CompletedHabitOutputMapper.toOutput(entity);
+      await this.completedHabitRepository.delete(input.idCompletedHabit);
     }
   }
 }

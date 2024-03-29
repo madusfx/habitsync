@@ -36,8 +36,16 @@ export class HabitPrismaRepository implements HabitRepository.Repository {
 
   async delete(id: string): Promise<void> {
     await this._get(id);
+    await this.prismaService.completedHabit.deleteMany({
+      where: {
+        idHabit: id,
+      },
+    });
+
     await this.prismaService.habit.delete({
-      where: { id },
+      where: {
+        id: id,
+      },
     });
   }
 

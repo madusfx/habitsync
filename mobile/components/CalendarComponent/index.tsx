@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
+import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Modal, View } from 'react-native';
@@ -37,6 +37,11 @@ export default function CalendarComponent() {
   const handleCloseModal = () => {
     setModalVisible(false);
   };
+
+  const handleDayPress = (day: DateData) => {
+    setSelected(day.dateString);
+    setModalVisible(true);
+  };
  
   return (
     <View>
@@ -60,18 +65,16 @@ export default function CalendarComponent() {
         textDisabledColor: '#DCDCDC'
       }}
       current={date.toISOString()}
-      onDayPress={() => {
-        setModalVisible(true); 
-      }}
+      onDayPress={(date) => handleDayPress(date)}
       markedDates={{
         [selected]: {selected: true, disableTouchEvent: true}
       }}
       maxDate={date.toISOString()}
       renderArrow={(direction) => (
         direction === 'left' ? (
-          <FontAwesomeIcon icon={faArrowLeft} size={20} />
+          <FontAwesomeIcon icon={faArrowLeft} size={20} color='#1e1b4b' />
         ) : (
-          <FontAwesomeIcon icon={faArrowRight} size={20} />
+          <FontAwesomeIcon icon={faArrowRight} size={20} color='#1e1b4b' />
         )
       )}
     />
@@ -81,7 +84,7 @@ export default function CalendarComponent() {
       visible={modalVisible}
       onRequestClose={handleCloseModal}
     >
-      <HabitHistoryModal setModalVisible={setModalVisible}/>
+      <HabitHistoryModal selectedDay={selected} setModalVisible={setModalVisible}/>
     </Modal>
     </View>
   );

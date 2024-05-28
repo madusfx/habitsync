@@ -1,67 +1,75 @@
-import { useState } from 'react';
-import { Input, Container, Button, Text, UnderlinedText, Register, Title } from './styles';
-import axios from 'axios';
+import { Container, Button, Text, UnderlinedText, Register, Title, TitleApp, ErrorText } from './styles';
+import { useForm } from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import { globalStyles } from '@/constants/globalStyles';
+import { registerSchema } from '@/utils/yup-schema';
+import { View } from '@/components/Themed';
 import api from '@/utils/api';
+import InputComponent from '@/components/InputComponent';
 
 const goToLogin = (navigation: any) => {
   navigation.navigate('Login');
 };
 
 export default function RegisterScreen({ navigation }: any) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    control, 
+    handleSubmit, 
+    setError,
+    formState: {errors},
+  } = useForm({
+    resolver: yupResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+  });
 
-  const handleNameChange = (text: string) => {
-    setName(text);
-  };
-
-  const handleEmailChange = (text: string) => {
-    setEmail(text);
-  };
-
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-  };
-
-  function NewRegister() {
-    const data = {
-      name: name,
-      email: email,
-      password: password,
-    }
-    console.log(data);
-    axios
-    api.post('/users', data)
+  function onSubmit(data: any) {
+    api.post(`/users`, data)
     .then(function (response) {
       console.log(response);
       goToLogin(navigation);
     })
     .catch(function (error) {
       console.log(error);
+      if (error.response && error.response.status === 409) {
+        setError("email", {
+          type: "manual",
+          message: "Este e-mail já está cadastrado.",
+        });
+      } else {
+        console.error("Erro inesperado:", error);
+      }
     });
   }
 
   return (
+    <View style={globalStyles.container}>
+    <TitleApp>HABITSYNC</TitleApp>
     <Container>
-      <Title>Registro</Title>
-      <Input 
+      <Title>REGISTRO</Title>
+      <InputComponent 
         placeholder="Nome"
-        value={name}
-        onChangeText={handleNameChange}
+        name="name"
+        control={control}
       />
-      <Input 
+      {errors.name && <ErrorText>{errors.name.message}</ErrorText>}
+      <InputComponent 
         placeholder='E-mail' 
-        value={email}
-        onChangeText={handleEmailChange}
+        name="email"
+        control={control}
       />
-      <Input 
-        placeholder='Senha' 
-        value={password}
-        onChangeText={handlePasswordChange}
+      {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
+      <InputComponent 
+        placeholder='Senha'
+        name="password"
         secureTextEntry={true} 
+        control={control}
       />
-      <Button onPress={NewRegister}>
+      {errors.password && <ErrorText>{errors.password.message}</ErrorText>}
+      <Button onPress={handleSubmit(onSubmit)}>
         <Text>Registrar</Text>
       </Button>
       <Register onPress={() => goToLogin(navigation)}>
@@ -71,5 +79,6 @@ export default function RegisterScreen({ navigation }: any) {
         </Text>
       </Register>
     </Container>
+    </View>
   );
 }

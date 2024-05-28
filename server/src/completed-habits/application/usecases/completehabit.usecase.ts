@@ -22,31 +22,24 @@ export namespace CompleteHabitUseCase {
     ) {}
 
     async execute(input: Input): Promise<Output> {
-      const { idHabit, idUser, completedHabit } = input;
+      const { idHabit, idUser } = input;
       if (!idHabit || !idUser) {
         throw new BadRequestError('Input data not provided');
       }
 
       const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-      const day = currentDate.getDate();
-
-      const today = new Date(year, month, day);
+      currentDate.setHours(0, 0, 0, 0);
 
       const existingCompletedHabit =
         await this.completedHabitRepository.findCompletedHabitByDate({
           idHabit,
-          completedHabit: today,
+          completedHabit: currentDate,
         });
 
       if (existingCompletedHabit) {
-        console.log('Habit already completed on this day');
-        return null;
+        return existingCompletedHabit;
       } else {
-        const entity = new CompletedHabitEntity(
-          Object.assign(input, { completedHabit: today }),
-        );
+        const entity = new CompletedHabitEntity(Object.assign(input));
         await this.completedHabitRepository.complete(entity);
         return CompletedHabitOutputMapper.toOutput(entity);
       }

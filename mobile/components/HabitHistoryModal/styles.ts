@@ -11,7 +11,7 @@ export const Container = styled.View`
 
 export const ContainerModal = styled.View`
   width: 80%;
-  background-color: white;
+  background-color: #1e1b4b;
   padding: 20px;
   border-radius: 10px;
 `;
@@ -21,19 +21,24 @@ export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background-color: #1e1b4b;
 `;
 
 export const Title = styled.Text`
-  text-align: center;
+  font-size: 12px;
+  color: white;
   font-weight: bold;
-  font-size: 18px;
+  text-align: center;
+  font-family: 'Montserrat_700Bold';
 `;
 
 export const Text = styled.Text`
   margin: 16px 0px 12px 0;
   font-weight: bold;
   text-align: center;
+  color: white;
   font-size: 14px;
+  font-family: 'Montserrat_400Regular';
 `;
 
 export const Card = styled.TouchableOpacity`
@@ -42,16 +47,8 @@ export const Card = styled.TouchableOpacity`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #6366f1;
   border-radius: 10px;
-  padding: 20px;
+  padding: 12px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-`;
-
-export const HabitSquare = styled.View`
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid #000000;
-  margin-right: 10px;
 `;

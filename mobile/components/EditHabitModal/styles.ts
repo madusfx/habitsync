@@ -17,12 +17,18 @@ export const ContainerModal = styled.View`
 `;
 
 export const ContainerTitle = styled.View`
-  margin-bottom: 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background-color: #1e1b4b;
+`;
+
+export const ButtonsContainer = styled.View`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const Title = styled.Text`
@@ -34,24 +40,7 @@ export const Title = styled.Text`
 `;
 
 export const Text = styled.Text`
-  margin-top: 8px;
-  font-weight: bold;
-  text-align: center;
-  color: white;
-  font-size: 14px;
-  font-family: 'Montserrat_400Regular';
-`;
-
-export const ErrorText = styled.Text`
-  font-weight: bold;
-  text-align: center;
-  color: white;
-  font-size: 10px;
-  font-family: 'Montserrat_400Regular';
-  margin-top: 8px;
-`;
-
-export const ButtonText = styled.Text`
+  margin: 16px 0px 12px 0;
   font-weight: bold;
   text-align: center;
   color: white;
@@ -60,7 +49,6 @@ export const ButtonText = styled.Text`
 `;
 
 export const Input = styled.TextInput`
-  margin-top: 12px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -69,14 +57,14 @@ export const Input = styled.TextInput`
   background-color: white;
   color: #6366f1;
   border-radius: 10px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 `;
 
 export const Button = styled.TouchableOpacity`
   margin-top: 16px;
   background-color: #6366f1;
-  padding: 16px;
+  padding: 6px;
   border-radius: 10px;
   border: rgba(0, 0, 0, 0.5);
 `;

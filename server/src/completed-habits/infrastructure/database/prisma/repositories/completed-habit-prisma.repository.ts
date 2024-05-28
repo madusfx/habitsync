@@ -29,21 +29,26 @@ export class CompletedHabitPrismaRepository
   }): Promise<CompletedHabitEntity[]> {
     const { idUser, completedHabit } = input;
 
-    const year = completedHabit.getFullYear();
-    const month = completedHabit.getMonth() + 1;
-    const day = completedHabit.getDate();
+    const completedHabitDate =
+      typeof completedHabit === 'string'
+        ? new Date(completedHabit)
+        : completedHabit;
+    const year = completedHabitDate.getFullYear();
+    const month = completedHabitDate.getMonth() + 1;
+    const day = completedHabitDate.getDate();
+
     try {
-      const findCompletedHabitByDate =
+      const findCompletedsHabitByDate =
         await this.prismaService.completedHabit.findMany({
           where: {
             idUser: idUser,
             completedHabit: {
-              gte: new Date(year, month - 1, day),
-              lt: new Date(year, month - 1, day + 1),
+              gte: new Date(year, month - 1, day), // greather then or equal
+              lt: new Date(year, month - 1, day + 1), // less then
             },
           },
         });
-      const completedHabitEntities = findCompletedHabitByDate.map(item => {
+      const completedHabitEntities = findCompletedsHabitByDate.map(item => {
         return new CompletedHabitEntity(item);
       });
       return completedHabitEntities;
@@ -70,14 +75,10 @@ export class CompletedHabitPrismaRepository
     });
 
     if (result) {
-      // Se o resultado existir, retorne-o
       return result as CompletedHabitEntity;
     } else {
-      // Se não houver resultado, retorne null
       return null;
     }
-
-    return result as CompletedHabitEntity;
   }
 
   protected async _get(id: string): Promise<CompletedHabitEntity> {

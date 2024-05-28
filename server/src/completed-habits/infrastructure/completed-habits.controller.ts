@@ -71,11 +71,11 @@ export class CompletedHabitsController {
   @Get()
   async findAll(
     @Query('idUser') idUser: string,
-    @Query('completedHabit') completedHabit: string,
+    @Query('completedHabit') completedHabit: Date,
   ) {
     const output = await this.findCompletedHabitUseCase.execute({
       idUser,
-      completedHabit: new Date(completedHabit),
+      completedHabit,
     });
     return CompletedHabitsController.completedHabitListToResponse(output);
   }

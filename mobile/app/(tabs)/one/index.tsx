@@ -1,12 +1,24 @@
-import { Card, Container, HabitSquare, Input, Text, Title } from './styles';
 import { useEffect, useState } from 'react';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Modal } from 'react-native';
-import CreateHabitModal from '../../../components/CreateHabitModal';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { getToken, getUserId } from '@/utils/auth';
-import axios from 'axios';
 import api from '@/utils/api';
+import { globalStyles } from '@/constants/globalStyles';
+import { View } from '@/components/Themed';
+import CreateHabitModal from '../../../components/CreateHabitModal';
+
+import { 
+  Card, 
+  Container, 
+  HabitSquare, 
+  Button, 
+  Text, 
+  TitleApp, 
+  CardsContainer,
+  ButtonsContainer
+} from './styles';
+import EditHabitModal from '@/components/EditHabitModal';
 
 interface Habit {
   id: string;
@@ -26,17 +38,50 @@ export default function HabitsScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completedHabits, setCompletedHabits] = useState<CompletedHabit[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalSelected, setModalSelected] = useState(null);
 
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+  const data = new Date();
+  const dia = data.getDate();
+  const mes = data.getMonth() + 1;
+  const ano = data.getFullYear();
 
-  const handleButtonPress = () => {
+  const diaFormatado = dia < 10 ? '0' + dia : dia;
+  const mesFormatado = mes < 10 ? '0' + mes : mes;
+
+  useEffect(() => {
+    fetchData();
+    getCompletedHabits();
+  }, [modalVisible]);
+  
+  async function fetchData() {
+    try {
+      const userId = await getUserId();
+      const token = await getToken();
+      const response = await api.get(`/habits/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log("response: ", response.data.data.habits);
+      //const currentDayOfWeek = new Date().getDay() + 1; 
+      //const filteredHabits = response.data.data.habits.filter((habit: Habit) =>
+      //  habit.weekDays.includes(currentDayOfWeek)
+      //);
+      //console.log(filteredHabits);
+      setHabits(response.data.data.habits);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleButtonPress = (modalType: any) => {
+    fetchData();
     setModalVisible(true);
+    setModalSelected(modalType);
   };
 
   const handleCloseModal = () => {
+    fetchData();
     setModalVisible(false);
   };
 
@@ -48,85 +93,77 @@ export default function HabitsScreen() {
     }
     try {
       const response = await api.post('/completed-habits', data);
-      console.log("teste", response.data);
+      console.log(response.data);
       setCompletedHabits([...completedHabits, response.data]);
     } catch (error) {
       console.log(error);
     }
+    getCompletedHabits();
   }
-  
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = await getUserId();
-        const token = await getToken();
-        const response = await api.get(`/habits/user/${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setHabits(response.data.data.habits);
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
-    // const getCompletedHabits = async () => {
-    //   const currentDate = new Date();
-    //   currentDate.setUTCHours(0, 0, 0, 0); 
-
-    //   const formattedDate = currentDate.toISOString();
-
-    //   console.log(formattedDate)
-    //   try {
-    //     const userId = await getUserId();
-    //     const response = await api.get(`/completed-habits/?idUser=${userId}&completedHabit=${formattedDate}`);
-    //     setCompletedHabits(response.data.data);
-    //   }
-    //   catch (error) {
-    //     console.log(error);
-    //   }
-    //}
-
-    fetchData();
-    // getCompletedHabits();
-  }, [modalVisible, habits, completedHabits]);
-  
+  async function getCompletedHabits() {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    try {
+      const userId = await getUserId();
+      const response = await api.get(`/completed-habits?idUser=${userId}&completedHabit=${currentDate.toISOString()}`);
+      setCompletedHabits(response.data.data);        
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
+    <>
+    <View style={globalStyles.container}>
+    <TitleApp>HABITSYNC - {diaFormatado}/{mesFormatado}/{ano}</TitleApp>
     <Container>
-      <Title>
-        HabitSync - {day}/{month}/{year}
-      </Title>
-
-      <Input onPress={handleButtonPress}>
-        <Text>
-          Criar um novo hábito
-        </Text>
-      </Input>
-
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={handleCloseModal}
       >
-        <CreateHabitModal setModalVisible={setModalVisible} />
-      </Modal>
+        {modalSelected === 'createHabitModal' ? (
+          <CreateHabitModal setModalVisible={setModalVisible} />
+        ) : null}
 
-      {habits.length > 0 ? habits.map((habit, index) => (
-        <Card key={index} onPress={() => sendCompletedHabitRequest(habit.id)}>
-          <HabitSquare>
-            {completedHabits.some(completedHabit => completedHabit.idHabit?.toString() === habit.id) && (
-              <FontAwesomeIcon icon={faCheck} size={24} color='green' />
-            )}
-          </HabitSquare>
-          <Text>{habit.name}</Text>
-        </Card>
-      )) : 
-        <Text>Você ainda não tem nenhum hábito criado. Vamos mudar isso? Crie um hábito agora clicando no botão abaixo</Text>
-      }
+        {modalSelected === 'editHabitModal' ? (
+          <EditHabitModal setModalVisible={setModalVisible} />
+        ) : null}
+      </Modal>
+      <CardsContainer contentContainerStyle={{ alignItems: 'center' }}>
+        {habits.length > 0 ? habits.map((habit, index) => (
+          <Card key={index} onPress={() => sendCompletedHabitRequest(habit.id)}>
+            <HabitSquare>            
+              {completedHabits.some(completedHabit => completedHabit.idHabit?.toString() == habit.id) && (
+                <FontAwesomeIcon icon={faCheck} size={20} color='white' />
+              )}
+            </HabitSquare>
+            <Text>{habit.name}</Text>
+          </Card>
+        )) : 
+          <Text>Você ainda não tem nenhum hábito criado.{"\n"} Vamos mudar isso? Crie um hábito agora clicando no botão abaixo.</Text>
+        }
+      </CardsContainer>
+
+      <ButtonsContainer>
+        <Button onPress={() => handleButtonPress('createHabitModal')}>
+          <Text>
+            Criar novo hábito
+          </Text>
+        </Button>
+        <Button onPress={() => handleButtonPress('editHabitModal')}>
+          <Text>
+            Editar um hábito
+          </Text>
+        </Button>
+      </ButtonsContainer>
+
     </Container>
+    </View>
+    </>
   );
 }

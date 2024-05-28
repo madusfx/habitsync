@@ -1,8 +1,5 @@
 import { BadRequestError } from '@/shared/application/errors/bad-request-error';
-import {
-  CompletedHabitOutput,
-  CompletedHabitOutputMapper,
-} from '../dtos/completed-habit-output';
+import { CompletedHabitOutput } from '../dtos/completed-habit-output';
 import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-case';
 import { CompletedHabitRepository } from '@/completed-habits/domain/repositories/completed-habit.repository';
 
